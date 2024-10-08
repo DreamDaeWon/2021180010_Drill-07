@@ -1,7 +1,6 @@
 import random
-
 from pico2d import *
-from random import randint
+
 
 
 # Game object class here
@@ -17,6 +16,9 @@ class Grass:
 
     def draw(self):
         self.image.draw(400,30)
+
+    def late_update(self):
+        pass
 
     pass
 
@@ -34,6 +36,38 @@ class Boy:
     def draw(self):
         self.image.clip_draw(self.frame*100,0,100,100,self.x,self.y)
 
+    def late_update(self):
+        pass
+
+
+class Ball:
+    def __init__(self):
+        self.x, self.y = random.randint(100,700), 599
+        self.image1 = load_image('ball21x21.png')
+        self.image2 = load_image('ball41x41.png')
+        self.selectimage = random.randint(0,1)
+        self.move = True
+        self.movespeed = random.randint(5,15)
+
+    def update(self):
+        if self.move:
+            self.y -= self.movespeed
+
+    def draw(self):
+
+        if self.selectimage == 0:
+            self.image1.draw(self.x, self.y)
+        else:
+            self.image2.draw(self.x, self.y)
+
+    def late_update(self):
+        if self.selectimage == 0 and self.y <= 55:
+            self.y = 55
+            self.move = False
+        if self.selectimage == 1 and self.y <= 65:
+            self.y = 65
+            self.move = False
+        pass
 
 
 def handle_events():
@@ -50,16 +84,20 @@ def reset_world():
     global grass
     global boy
     global team
+    global allball
     global world
 
     running = True
+    world = []
 
     grass = Grass() # 잔디를 찍어낸다.(생성한다.)
     world.append(grass)
 
     team = [Boy() for i in range(11)]
+    allball = [Ball() for j in range(20)]
 
     world += team
+    world += allball
 
 running = True
 
@@ -68,6 +106,9 @@ def update_world():
     global grass
     for o in world:  # 객체의 상태를 업데이트
         o.update()
+
+    for o in world:  # 객체의 상태를 업데이트
+        o.late_update()
     pass
 
 def render_world():
