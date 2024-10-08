@@ -88,7 +88,7 @@ def reset_world():
     global world
 
     running = True
-    world = []
+    world = [] # 전체
 
     grass = Grass() # 잔디를 찍어낸다.(생성한다.)
     world.append(grass)
